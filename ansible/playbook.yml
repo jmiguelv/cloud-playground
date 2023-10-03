@@ -1,0 +1,41 @@
+---
+- name: Ensure hosts are reachable
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: Wait for system to become reachable
+      wait_for_connection:
+
+    - name: Gather facts after host is reachable
+      setup:
+
+    - name: Wait for apt to unlock
+      become: true
+      shell:  while sudo fuser /var/lib/dpkg/lock >/dev/null 2>&1; do sleep 5; done;
+
+- name: users
+  hosts: all
+  become: true
+  tasks:
+    - name: Add the user 'terra' and add it to 'sudo'
+      user:
+        name: terra
+        group: sudo
+
+- name: www
+  hosts: all
+  become: true
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: true
+
+    - name: Install nginx
+      apt:
+        name: nginx
+        state: present
+
+    - name: Start nginx
+      service:
+        name: nginx
+        state: started
