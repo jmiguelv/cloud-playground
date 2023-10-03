@@ -1,0 +1,10 @@
+#cloud-config
+apt:
+  preserve_sources_list: false
+  primary: true
+  security: true
+
+runcmd:
+  - touch /tmp/test
+  - apt update
+  - apt install -y python3-ansible-runner
